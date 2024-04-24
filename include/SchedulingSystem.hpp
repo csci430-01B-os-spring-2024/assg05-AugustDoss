@@ -177,6 +177,12 @@ public:
   void checkProcessPreemption();
   void updateProcessStatistics();
   void runSimulation(bool verbose = false);
+
+  // methods (NOTE: change this later to be more descriptive)
+  int getSystemTime() const;
+  int getNumProcesses() const;
+  bool isCpuIdle() const;
+  string getRunningProcessName() const;
 };
 
 #endif // SCHEDULING_SYSTEM_HPP
