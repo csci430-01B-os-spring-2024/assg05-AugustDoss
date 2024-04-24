@@ -221,6 +221,32 @@ void SchedulingSystem::dispatchCpuIfIdle()
   }
 }
 
+/**
+ * @brief Checks if the currently running process has finished and updates its state accordingly.
+ *
+ * If the CPU is idle or if the currently running process has not finished its service time,
+ * this function does nothing. If the currently running process has finished its service time,
+ * it records the end time, marks the process as done, and sets the CPU to idle.
+ */
+void SchedulingSystem::checkProcessFinished()
+{
+  if (isCpuIdle())
+  {
+    return;
+  }
+
+  Process& runningProcess = process[cpu];
+
+  if (runningProcess.usedTime < runningProcess.serviceTime)
+  {
+    return;
+  }
+
+  runningProcess.endTime = systemTime;
+  runningProcess.done = true;
+  cpu = IDLE;
+}
+
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process

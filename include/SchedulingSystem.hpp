@@ -187,6 +187,8 @@ public:
   bool allProcessesDone() const;
 
   void dispatchCpuIfIdle();
+
+  void checkProcessFinished();
 };
 
 #endif // SCHEDULING_SYSTEM_HPP
