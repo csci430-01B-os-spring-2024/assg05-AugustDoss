@@ -177,6 +177,27 @@ string SchedulingSystem::getRunningProcessName() const
   }
 }
 
+/**
+ * @brief Checks if all processes in the simulation are done.
+ *
+ * It iterates through the process table and checks if all processes
+ * have been marked as done. If any process is found to be not done,
+ * it returns false. If all processes are marked done, it returns true.
+ *
+ * @returns true if all processes are done, false otherwise.
+ */
+bool SchedulingSystem::allProcessesDone() const
+{
+  for (int i = 0; i < numProcesses; i++)
+  {
+    if (!process[i].done)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process

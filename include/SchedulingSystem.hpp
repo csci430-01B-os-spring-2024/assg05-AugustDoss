@@ -183,6 +183,8 @@ public:
   int getNumProcesses() const;
   bool isCpuIdle() const;
   string getRunningProcessName() const;
+
+  bool allProcessesDone() const;
 };
 
 #endif // SCHEDULING_SYSTEM_HPP
