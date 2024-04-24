@@ -185,6 +185,8 @@ public:
   string getRunningProcessName() const;
 
   bool allProcessesDone() const;
+
+  void dispatchCpuIfIdle();
 };
 
 #endif // SCHEDULING_SYSTEM_HPP

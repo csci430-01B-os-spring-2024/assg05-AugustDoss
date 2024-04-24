@@ -198,6 +198,29 @@ bool SchedulingSystem::allProcessesDone() const
   return true;
 }
 
+/**
+ * @brief Dispatches the CPU with a process if it's idle.
+ *
+ * This function checks if the CPU is idle using the isCpuIdle() method.
+ * If the CPU is idle, it queries the scheduling policy object to determine
+ * the next process to run. Once a process is selected, it updates the CPU
+ * with the process ID and records the start time (if necessary).
+ */
+void SchedulingSystem::dispatchCpuIfIdle()
+{
+  if (isCpuIdle())
+  {
+    Pid nextProcessId = policy->dispatch();
+
+    cpu = nextProcessId;
+
+    if (process[cpu].startTime == NOT_STARTED)
+    {
+      process[cpu].startTime = systemTime;
+    }
+  }
+}
+
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process
