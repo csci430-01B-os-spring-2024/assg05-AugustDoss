@@ -17,6 +17,7 @@
 #include "SchedulingPolicy.hpp"
 #include <queue>
 #include <string>
+#include <unordered_map>
 
 // forward declaration needed for circular references
 class SchedulingSystem;
@@ -42,18 +43,20 @@ private:
   /// @brief The ready queue for the RR policy, keeps track of
   ///   which process arrived first for dispatching.
   queue<Pid> readyQueue;
+  unordered_map<Pid, int> timeSliceMap; // Map to store remaining time slice for each process
+  int timeSliceQuantum;
 
 public:
-  RRSchedulingPolicy();
+  RRSchedulingPolicy(int quantum);
 
   // virtual function, concrete subclasses can override if needed
   virtual ~RRSchedulingPolicy();
 
   // virtual functions, concrete subclasses must implement
-  void newProcess(Pid pid);
-  Pid dispatch();
-  bool preempt();
-  void resetPolicy();
+  void newProcess(Pid pid) override;
+  Pid dispatch() override;
+  bool preempt() override;
+  void resetPolicy() override;
 };
 
 #endif // RRSCHEDULING_POLICY_HPP

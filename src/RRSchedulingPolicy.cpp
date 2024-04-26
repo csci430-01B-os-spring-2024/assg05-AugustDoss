@@ -29,10 +29,10 @@ using namespace std;
  * system instance we are associated with, so we can call the paging system to
  * get needed information to make replacment decisions.
  */
-RRSchedulingPolicy::RRSchedulingPolicy()
+RRSchedulingPolicy::RRSchedulingPolicy(int quantum)
   : SchedulingPolicy()
+  , timeSliceQuantum(quantum)
 {
-  sys = NULL;
   resetPolicy();
 }
 
@@ -56,34 +56,42 @@ void RRSchedulingPolicy::newProcess(Pid pid)
 {
   // put the new process on the end of the ready queue
   readyQueue.push(pid);
+  timeSliceMap[pid] = timeSliceQuantum;
 }
 
-/** dispatch a process
+/**
+ * @brief dispatch a process
  * When the cpu is idle, the scheduling simulator calls this
  * method of the policy object to select which process to
- * dispatch and schedule and run next on the cpu.  The
- * First Come First Serve (RR) policy simply selects the
- * process that has been waiting the longest, and thus was the
- * first to "come" into the system.
+ * dispatch and schedule and run next on the cpu. The round-robin
+ * policy selects the process that has been waiting the longest,
+ * ensures it runs for at most the time slice quantum, and then
+ * preempt it.
  *
  * @returns pid Returns the process identifier of the process
  *   we select to run next.
  */
 Pid RRSchedulingPolicy::dispatch()
 {
-  // make sure the ready queue is not empty, if it is we
+  // Make sure the ready queue is not empty, if it is we
   // can't dispatch at this time
   if (readyQueue.empty())
   {
     return IDLE;
   }
-  // otherwise pop the front item and return it
-  else
+
+  Pid pid = readyQueue.front();
+
+  if (timeSliceMap[pid] == 0)
   {
-    int pid = readyQueue.front();
+    timeSliceMap[pid] = timeSliceQuantum;
     readyQueue.pop();
-    return pid;
+    readyQueue.push(pid);
+
+    pid = readyQueue.front();
   }
+  timeSliceMap[pid]--;
+  return pid;
 }
 
 /**
@@ -115,4 +123,5 @@ void RRSchedulingPolicy::resetPolicy()
   // with an empty one.
   queue<Pid> empty;
   swap(readyQueue, empty);
+  timeSliceMap.clear();
 }
