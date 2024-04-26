@@ -44,7 +44,7 @@ private:
   ///   which process arrived first for dispatching.
   queue<Pid> readyQueue;
   unordered_map<Pid, int> timeSliceMap; // Map to store remaining time slice for each process
-  int timeSliceQuantum;
+  int quantum;
 
 public:
   RRSchedulingPolicy(int quantum);

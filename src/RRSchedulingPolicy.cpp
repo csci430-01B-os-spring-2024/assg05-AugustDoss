@@ -31,7 +31,7 @@ using namespace std;
  */
 RRSchedulingPolicy::RRSchedulingPolicy(int quantum)
   : SchedulingPolicy()
-  , timeSliceQuantum(quantum)
+  , quantum(quantum)
 {
   resetPolicy();
 }
@@ -56,7 +56,7 @@ void RRSchedulingPolicy::newProcess(Pid pid)
 {
   // put the new process on the end of the ready queue
   readyQueue.push(pid);
-  timeSliceMap[pid] = timeSliceQuantum;
+  timeSliceMap[pid] = quantum;
 }
 
 /**
@@ -81,16 +81,17 @@ Pid RRSchedulingPolicy::dispatch()
   }
 
   Pid pid = readyQueue.front();
+  timeSliceMap[pid]--;
 
-  if (timeSliceMap[pid] == 0)
+  if (timeSliceMap[pid] <= 0)
   {
-    timeSliceMap[pid] = timeSliceQuantum;
     readyQueue.pop();
     readyQueue.push(pid);
 
     pid = readyQueue.front();
+    timeSliceMap[pid] = quantum;
   }
-  timeSliceMap[pid]--;
+
   return pid;
 }
 
